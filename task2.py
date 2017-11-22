@@ -47,12 +47,10 @@ Y4 = tf.nn.softmax(tf.matmul(Y3, W4) + B4)
 Ylogits = tf.matmul(Y4, W5) + B5
 Y = tf.nn.softmax(Ylogits)
 
-'''
-# 3. Define the loss function
-cross_entropy = tf.reduce_mean(-tf.reduce_sum(Y_ * tf.log(Y), reduction_indices=[1]))
+cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y_, logits=Ylogits))
 
 # 4. Define the accuracy
-correct_prediction = tf.equal(tf.argmax(Y,1), tf.argmax(Y_,1))
+correct_prediction = tf.equal(tf.argmax(Y,1), tf.argmax(Y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # 5. Define an optimizer
@@ -98,8 +96,5 @@ plt.plot(range(0, iterations), y_loss, label='Loss')
 plt.legend()
 plt.show()
 
-	#sess.run(init)
-
 # 7a. If you are using Python/Docker, plot and visualise the accuracy and loss
 # 7b. If you are using hops.site, write to Tensorboard logs, and visualize using Tensorboard
-'''
