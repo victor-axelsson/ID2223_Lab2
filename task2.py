@@ -5,7 +5,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 import matplotlib.pyplot as plt
 
 # load data
-mnist = input_data.read_data_sets('input/data', one_hot=True)
+mnist = input_data.read_data_sets('input/fashion', one_hot=True)
 
 # 1. Define Variables and Placeholders
 X = tf.placeholder(tf.float32, [None, 28, 28, 1])
@@ -45,6 +45,10 @@ B5 = tf.Variable(tf.zeros([layer5_size]))
 # With sigmoid:
 # Loss => 0.123101
 # Accuracy => 0.9717
+#
+# With relu:
+# Loss => 0.155508
+# Accuracy => 0.978
 #
 XX = tf.reshape(X, [-1, 784])   
 Y1 = tf.nn.relu(tf.matmul(XX, W1) + B1)

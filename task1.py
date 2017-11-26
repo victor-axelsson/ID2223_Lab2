@@ -5,16 +5,7 @@ from tensorflow.examples.tutorials.mnist import input_data
 import matplotlib.pyplot as plt
 
 # load data
-mnist = input_data.read_data_sets('input/data', one_hot=True)
-
-# Shapes of training set
-print("Training set (images) shape: {shape}".format(shape= mnist.train.images.shape))
-print("Training set (labels) shape: {shape}".format(shape=mnist.train.labels.shape))
-
-# Shapes of test set
-print("Test set (images) shape: {shape}".format(shape=mnist.test.images.shape))
-print("Test set (labels) shape: {shape}".format(shape=mnist.test.labels.shape))
-
+mnist = input_data.read_data_sets('input/fashion', one_hot=True)
 
 # 1. Define Variables and Placeholders
 X = tf.placeholder(tf.float32, [None, 28, 28, 1])
