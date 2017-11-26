@@ -40,7 +40,7 @@ layer4_out = 200
 
 layer5_size = 10
 
-iterations = 100
+iterations = 200
 
 #learning rate placeholder
 lr = tf.placeholder(tf.float32)
@@ -48,19 +48,25 @@ lr = tf.placeholder(tf.float32)
 # placeholder for probability of keeping a node during dropout = 1.0 at test time (no dropout) and 0.75 at   À training time
 pkeep = tf.placeholder(tf.float32)
 
- 
 #define weight variable for a convolutional layer
 W1 = tf.Variable(tf.truncated_normal([layer1_w, layer1_h, layer1_d, layer1_out], stddev=0.1))
 B1 = bias_variable([layer1_out])
-Y1 = tf.nn.relu(tf.nn.conv2d(XX, W1, strides=[1, 1, 1, 1], padding='SAME') + B1)
+Y1 = tf.nn.max_pool(
+	tf.nn.relu(tf.nn.conv2d(XX, W1, strides=[1, 1, 1, 1], padding='SAME') + B1), 
+	ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
+
 
 W2 = tf.Variable(tf.truncated_normal([layer2_w, layer2_h, layer1_out, layer2_out], stddev=0.1))
 B2 = bias_variable([layer2_out])
-Y2 = tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, 2, 2, 1], padding='SAME') + B2)
+Y2 = tf.nn.max_pool(
+	tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, 2, 2, 1], padding='SAME') + B2),
+	ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 W3 = tf.Variable(tf.truncated_normal([layer3_w, layer3_h, layer2_out, layer3_out], stddev=0.1))
 B3 = bias_variable([layer3_out])
-Y3 = tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, 2, 2, 1], padding='SAME') + B3)
+Y3 = tf.nn.max_pool(
+	tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, 2, 2, 1], padding='SAME') + B3),
+	ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 #	Densly connected layer #
 # Reshape output of layer 3 to a flat array of size layer4_w
@@ -109,7 +115,7 @@ def training_step(_pkeep, _iterations):
 	for epoch in range(_iterations):
 		
 		#Train
-		batch_xs, batch_ys = mnist.train.next_batch(10)
+		batch_xs, batch_ys = mnist.train.next_batch(100)
 		sess.run(train_step, feed_dict={X: batch_xs, Y_: batch_ys, pkeep: _pkeep, global_step: epoch})
 
 		#Test
