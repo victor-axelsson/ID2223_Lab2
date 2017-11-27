@@ -1,25 +1,25 @@
 1. What is the maximum accuracy that you can get in each setting for running your model with 10000 iterations?
 
-I used the AdamOptimizer
+We used the AdamOptimizer
 
-With sigmoid I get:
+With sigmoid we get:
 	Loss => 0.364584
 	Accuracy => 0.8738
 	See: task2_sigmoid_10K.png
 
-With ReLu I get:
+With ReLu we get:
 	Loss => 0.357209
 	Accuracy => 0.8818
 	See task2_relu_10K.png
 
 2. Is there a big difference between the convergence rate of the sigmoid and the ReLU ? If yes, what is the reason for the difference?
 
-	It looks like the ReLu dives a little faster into convergence. Don't really know why. 
+	It looks like the ReLu dives a little faster into convergence. It seems that ReLU has steeper gradients closer to 1 than a sigmoid, whilch leads to the faster convergence.
 
 3. What is the reason that we use the softmax in our output layer?
 	
-	So that you will get a probabillity distribution that sums up to 1 instead of absolute numbers. 
+	So that you will get an array of probabilities for each class that sums up to 1 instead of absolute numbers, which can be subjectively harder to interpret 
 
 4. By zooming into the second half of the epochs in accuracy and loss plot, do you see any strange behaviour? What is the reason and how you can overcome them? (e.g., look at fluctuations or sudden loss increase after a period of decreasing loss).
 
-	It is because it overshoots the global optimum. If the learning rate was gradually decreasing we would get a little better results. 
+	It is because it overshoots the local or global optimum. If the learning rate was gradually decreasing we would get a little better results. 
