@@ -1,0 +1,16 @@
+
+With AdamOptimizer, 10K iterations:
+	Loss => 0.374164
+	Accuracy => 0.8797
+	See task3.png
+
+
+Explain during grading the motivation behind learning rate decay.
+	
+	So we don't overshoot all the time with a learning rate that is too big when you start closing in on the global optimum
+
+
+Explain during grading why dropout can be an effective regularization technique.
+	
+
+For each of the programming tasks plot accuracy and loss, and analyze whether your additions influence the accuracy/loss and if yes, in what way.

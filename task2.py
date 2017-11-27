@@ -3,9 +3,10 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 import matplotlib.pyplot as plt
+import helper
 
 # load data
-mnist = input_data.read_data_sets('input/fashion', one_hot=True)
+mnist = helper.getMnist()
 
 # 1. Define Variables and Placeholders
 X = tf.placeholder(tf.float32, [None, 28, 28, 1])
@@ -39,17 +40,6 @@ W5 = tf.Variable(tf.truncated_normal([layer4_size, layer5_size], stddev=0.1))
 B5 = tf.Variable(tf.zeros([layer5_size]))
 
 #Define the model
-## Sigmoid and softmax
-## ReLu and softmax
-#
-# With sigmoid:
-# Loss => 0.123101
-# Accuracy => 0.9717
-#
-# With relu:
-# Loss => 0.155508
-# Accuracy => 0.978
-#
 XX = tf.reshape(X, [-1, 784])   
 Y1 = tf.nn.relu(tf.matmul(XX, W1) + B1)
 Y2 = tf.nn.relu(tf.matmul(Y1, W2) + B2)
@@ -57,7 +47,6 @@ Y3 = tf.nn.relu(tf.matmul(Y2, W3) + B3)
 Y4 = tf.nn.relu(tf.matmul(Y3, W4) + B4)
 Ylogits = tf.matmul(Y4, W5) + B5
 Y = tf.nn.softmax(Ylogits) ## <- always softmax
-
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y_, logits=Ylogits))
 
@@ -74,38 +63,44 @@ sess = tf.InteractiveSession()
 tf.global_variables_initializer().run()
 
 # 6. Train and test the model, store the accuracy and loss per iteration
-iterations = 10000
 y_acc = []
 y_loss = []
+x_axis = []
 #train_step = train_step_gd
 train_step = train_step_ao
 acc = 0
 loss = 0
 
-for x in range(iterations):
-	batch_xs, batch_ys = mnist.train.next_batch(100)
-	sess.run(train_step, feed_dict={XX: batch_xs, Y_: batch_ys})
-	acc = sess.run(accuracy, feed_dict={XX: mnist.test.images, Y_: mnist.test.labels})
-	loss = sess.run(cross_entropy, feed_dict={XX: mnist.test.images, Y_: mnist.test.labels})
-	y_acc.append(acc)
-	y_loss.append(loss)
+def train_iterations(iterations, batch_size):
 
-	# print every 100 iterations
-	if x % 100 == 0:
-		print("[ITERATTIONS] => " + str(x) + "/" + str(iterations))
+	# initialize
+	init = tf.initialize_all_variables() 
+	sess = tf.InteractiveSession()
+	tf.global_variables_initializer().run()
+	
+	acc = 0
+	loss = 0
+	for i in range(iterations):
 
+		batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+		sess.run(train_step, feed_dict={XX: batch_xs, Y_: batch_ys})
+		
+		if(i % 100 == 0):
+			acc = sess.run(accuracy, feed_dict={XX: mnist.test.images, Y_: mnist.test.labels})
+			loss = sess.run(cross_entropy, feed_dict={XX: mnist.test.images, Y_: mnist.test.labels})
+			y_acc.append(acc)
+			y_loss.append(loss)
+			x_axis.append(i )
+			print("[ITERATIONS] => " + str(i) + "/" + str(iterations))
+
+	return (acc, loss)
+
+acc, loss = train_iterations(10000, 100)
 
 print("Loss => " +  str(loss))
 print("Accuracy => " +  str(acc))
 
-plt.xlabel("Iterations")
-plt.ylabel("Accuracy/Cross Entropy")
-plt.title("Accuracy over iterations")
-
-plt.plot(range(0, iterations), y_acc, label='Accuracy')
-plt.plot(range(0, iterations), y_loss, label='Loss')
-plt.legend()
-plt.show()
+helper.plotLossAndAccuracy(x_axis, y_loss, x_axis, y_acc)
 
 # 7a. If you are using Python/Docker, plot and visualise the accuracy and loss
 # 7b. If you are using hops.site, write to Tensorboard logs, and visualize using Tensorboard

@@ -3,9 +3,10 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.examples.tutorials.mnist import input_data
 import matplotlib.pyplot as plt
+import helper
 
 # load data
-mnist = input_data.read_data_sets('input/fashion', one_hot=True)
+mnist = helper.getMnist()
 
 def weight_variable(shape):
 	initial = tf.truncated_normal(shape, stddev=0.1)
@@ -14,6 +15,8 @@ def weight_variable(shape):
 def bias_variable(shape):
 	initial = tf.constant(0.1, shape=shape)
 	return tf.Variable(initial)
+
+print("MNIST number of examples => " + str(mnist.train.num_examples))
 
 # 1. Define Variables and Placeholders
 X = tf.placeholder(tf.float32, [None, 784])
@@ -40,7 +43,6 @@ layer4_out = 200
 
 layer5_size = 10
 
-iterations = 200
 
 #learning rate placeholder
 lr = tf.placeholder(tf.float32)
@@ -54,7 +56,6 @@ B1 = bias_variable([layer1_out])
 Y1 = tf.nn.max_pool(
 	tf.nn.relu(tf.nn.conv2d(XX, W1, strides=[1, 1, 1, 1], padding='SAME') + B1), 
 	ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
-
 
 W2 = tf.Variable(tf.truncated_normal([layer2_w, layer2_h, layer1_out, layer2_out], stddev=0.1))
 B2 = bias_variable([layer2_out])
@@ -88,18 +89,22 @@ cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y_
 correct_prediction = tf.equal(tf.argmax(Y,1), tf.argmax(Y_, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
-
 # 5. Define an optimizer
 global_step = tf.Variable(0, trainable=False)
-starter_learning_rate = 0.6
-learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, iterations, 0.90, staircase=True)
+starter_learning_rate = 0.1
+learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 10000, 0.90, staircase=True)
 
-train_step_gd = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
+#train_step_gd = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
+train_step_gd = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 train_step_ao = tf.train.AdamOptimizer(0.005).minimize(cross_entropy)
 
-
-def training_step(_pkeep, _iterations):
-
+####
+# Task 1, Couldn't even get propper results 
+# Task 2, Adam optimizer. 100 iterations. Fixed learning rate of 0,005: 
+# Loss => 0.249494
+# Accuracy => 0.9266
+#
+def training_step(_pkeep, _iterations, batch_size):
 	# initialize
 	sess = tf.InteractiveSession()
 	tf.global_variables_initializer().run()
@@ -107,41 +112,38 @@ def training_step(_pkeep, _iterations):
 	# 6. Train and test the model, store the accuracy and loss per iteration
 	y_acc = []
 	y_loss = []
-	#train_step = train_step_gd
+	x_axis = []
 	train_step = train_step_gd
+	#train_step = train_step_ao
 	acc = 0
 	loss = 0
 
-	for epoch in range(_iterations):
+	for i in range(_iterations):
 		
 		#Train
-		batch_xs, batch_ys = mnist.train.next_batch(100)
-		sess.run(train_step, feed_dict={X: batch_xs, Y_: batch_ys, pkeep: _pkeep, global_step: epoch})
-
-		#Test
-		acc = sess.run(accuracy, feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 1})
-		loss = sess.run(cross_entropy, feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 1})
-		
-		#save data for the graphs
-		y_acc.append(acc)
-		y_loss.append(loss)
+		batch_xs, batch_ys = mnist.train.next_batch(batch_size)
+		sess.run(train_step, feed_dict={X: batch_xs, Y_: batch_ys, pkeep: _pkeep, global_step: i})
 
 		# print every 100 iterations
-		if epoch % 1 == 0:
-			print("[ITERATTIONS] => " + str(epoch) + "/" + str(_iterations))
+		if(i % 100 == 0):
+			#Test
+			acc = sess.run(accuracy, feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 1})
+			loss = sess.run(cross_entropy, feed_dict={X: mnist.test.images, Y_: mnist.test.labels, pkeep: 1})
+			
+			#save data for the graphs
+			y_acc.append(acc)
+			y_loss.append(loss)
+			x_axis.append(i)
 
-	print("Loss => " +  str(loss))
-	print("Accuracy => " +  str(acc))
+			print("[ITERATTIONS] => " + str(i) + "/" + str(_iterations))
 
-	plt.xlabel("Iterations")
-	plt.ylabel("Accuracy/Cross Entropy")
-	plt.title("Accuracy over iterations")
+	return (acc, loss, y_acc, y_loss, x_axis)
 
-	plt.plot(range(0, iterations), y_acc, label='Accuracy')
-	plt.plot(range(0, iterations), y_loss, label='Loss')
-	plt.legend()
-	plt.show()
 
-training_step(0.75, iterations)
+acc, loss, y_acc, y_loss, x_axis = training_step(0.75, 10000, 100)
 
+print("Loss => " +  str(loss))
+print("Accuracy => " +  str(acc))
+
+helper.plotLossAndAccuracy(x_axis, y_loss, x_axis, y_acc)
 

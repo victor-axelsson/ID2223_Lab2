@@ -1,0 +1,7 @@
+task1_gd.png shows that gradient descent is overshooting. The AdamOptimzer is much smoother. Something goes wrong if the learning rate is too big (as illustrated in task1_ao1.png) and when you lower it, you get better results (as illustrated in task1.ao2.png). AdamOptimzer seems faster to converge also. 
+
+What loss and accuracy do you get when training over 10.000 iterations?
+Accuracy around 84% and loss at about 
+
+Loss => 0.446452
+Accuracy => 0.8441
