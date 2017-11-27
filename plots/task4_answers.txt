@@ -1,0 +1,26 @@
+Define the output structure of the convolutional layers based on the given stride.
+
+For each of the programming subtasks 2-4 point out the changes that happen to the accuracy and error and explain why your modifications caused those changes.
+
+
+All run with 10K iterations: 
+
+1, Setup the network layer with 3 conv layers, 1 relu layer and 1 softmax layer with a GradientDescentOptimizer.
+	Loss => 0.34355
+	Accuracy => 0.8782
+	See task4_pt1.png
+
+2. Change the optimizer to the AdamOptimizer.
+	Loss => 0.336395
+	Accuracy => 0.8852
+	See task4_pt2.png
+
+3. Add a learning decay to the network.
+	Loss => 0.313124
+	Accuracy => 0.8906
+	See task4_pt3.png
+
+4. Add regularization through dropout.
+	Loss => 0.390661
+	Accuracy => 0.8515
+	See task4_pt4.png

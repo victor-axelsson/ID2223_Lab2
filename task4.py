@@ -54,20 +54,27 @@ pkeep = tf.placeholder(tf.float32)
 W1 = tf.Variable(tf.truncated_normal([layer1_w, layer1_h, layer1_d, layer1_out], stddev=0.1))
 B1 = bias_variable([layer1_out])
 Y1 = tf.nn.max_pool(
-	tf.nn.relu(tf.nn.conv2d(XX, W1, strides=[1, 1, 1, 1], padding='SAME') + B1), 
+	tf.nn.dropout(
+		tf.nn.relu(tf.nn.conv2d(XX, W1, strides=[1, 1, 1, 1], padding='SAME') + B1), 
+		pkeep),
 	ksize=[1, 1, 1, 1], strides=[1, 1, 1, 1], padding='SAME')
+	
 
 W2 = tf.Variable(tf.truncated_normal([layer2_w, layer2_h, layer1_out, layer2_out], stddev=0.1))
 B2 = bias_variable([layer2_out])
 Y2 = tf.nn.max_pool(
-	tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, 2, 2, 1], padding='SAME') + B2),
-	ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+		tf.nn.dropout(
+			tf.nn.relu(tf.nn.conv2d(Y1, W2, strides=[1, 2, 2, 1], padding='SAME') + B2),
+			pkeep),
+		ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 W3 = tf.Variable(tf.truncated_normal([layer3_w, layer3_h, layer2_out, layer3_out], stddev=0.1))
 B3 = bias_variable([layer3_out])
 Y3 = tf.nn.max_pool(
-	tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, 2, 2, 1], padding='SAME') + B3),
-	ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+		tf.nn.dropout(
+			tf.nn.relu(tf.nn.conv2d(Y2, W3, strides=[1, 2, 2, 1], padding='SAME') + B3),
+			pkeep),
+		ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 #	Densly connected layer #
 # Reshape output of layer 3 to a flat array of size layer4_w
@@ -91,12 +98,12 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # 5. Define an optimizer
 global_step = tf.Variable(0, trainable=False)
-starter_learning_rate = 0.1
+starter_learning_rate = 0.005
 learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 10000, 0.90, staircase=True)
 
 #train_step_gd = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
 train_step_gd = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
-train_step_ao = tf.train.AdamOptimizer(0.005).minimize(cross_entropy)
+train_step_ao = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
 
 ####
 # Task 1, Couldn't even get propper results 
@@ -113,7 +120,7 @@ def training_step(_pkeep, _iterations, batch_size):
 	y_acc = []
 	y_loss = []
 	x_axis = []
-	train_step = train_step_gd
+	train_step = train_step_ao
 	#train_step = train_step_ao
 	acc = 0
 	loss = 0
