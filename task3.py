@@ -50,16 +50,16 @@ XX = tf.reshape(X, [-1, 784])
 Y1 = tf.nn.relu(tf.matmul(XX, W1) + B1)
 Y1d = tf.nn.dropout(Y1, pkeep)
 
-Y2 = tf.nn.relu(tf.matmul(Y1, W2) + B2)
+Y2 = tf.nn.relu(tf.matmul(Y1d, W2) + B2)
 Y2d = tf.nn.dropout(Y2, pkeep)
 
-Y3 = tf.nn.relu(tf.matmul(Y2, W3) + B3)
+Y3 = tf.nn.relu(tf.matmul(Y2d, W3) + B3)
 Y3d = tf.nn.dropout(Y3, pkeep)
 
-Y4 = tf.nn.relu(tf.matmul(Y3, W4) + B4)
+Y4 = tf.nn.relu(tf.matmul(Y3d, W4) + B4)
 Y4d = tf.nn.dropout(Y4, pkeep)
 
-Ylogits = tf.matmul(Y4, W5) + B5
+Ylogits = tf.matmul(Y4d, W5) + B5
 Y = tf.nn.softmax(Ylogits) ## <- always softmax
 
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=Y_, logits=Ylogits))
@@ -74,7 +74,7 @@ starter_learning_rate = 0.005
 learning_rate = tf.train.exponential_decay(starter_learning_rate, global_step, 10000, 0.90, staircase=True)
 
 train_step_gd = tf.train.GradientDescentOptimizer(learning_rate).minimize(cross_entropy)
-train_step_ao = tf.train.AdamOptimizer(learning_rate).minimize(cross_entropy)
+train_step_ao = tf.train.AdamOptimizer(starter_learning_rate).minimize(cross_entropy)
 train_step = train_step_ao
 
 def train_iterations(iterations, batch_size, _pkeep):
@@ -109,7 +109,7 @@ def train_iterations(iterations, batch_size, _pkeep):
 
 	return (acc, loss, y_acc, y_loss, x_axis)
 
-acc, loss, y_acc, y_loss, x_axis = train_iterations(10000, 100, 0.75)
+acc, loss, y_acc, y_loss, x_axis = train_iterations(50000, 100, 0.9)
 
 print("Loss => " +  str(loss))
 print("Accuracy => " +  str(acc))
