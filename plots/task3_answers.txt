@@ -7,10 +7,12 @@ With AdamOptimizer, 10K iterations:
 
 Explain during grading the motivation behind learning rate decay.
 	
-	So we don't overshoot all the time with a learning rate that is too big when you start closing in on the global optimum
+	So we don't overshoot all the time with a learning rate that is too big when you start closing in on the optimum
 
 
 Explain during grading why dropout can be an effective regularization technique.
-	
+	https://www.quora.com/How-does-the-dropout-method-work-in-deep-learning-And-why-is-it-claimed-to-be-an-effective-trick-to-improve-your-network
+	So basically it is a regularization technique, where we try to train network  by alternately randomly disabling neurons in the learning phase, which decreases chances of neurons co-adapting and the whole network overfitting
+	The reason that this works is comparable to why using the mean outputs of many separately trained neural networks to reduces overfitting
 
 For each of the programming tasks plot accuracy and loss, and analyze whether your additions influence the accuracy/loss and if yes, in what way.
