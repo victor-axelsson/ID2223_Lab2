@@ -1,0 +1,34 @@
+
+
+
+
+'''
+Job number	Learning rate	Dropout
+1			0.001			0.45
+2			0.001			0.7
+3			0.0005			0.45
+4			0.0005			0.7
+5			0.0001			0.45
+6			0.0001			0.7
+'''
+
+task5_pt1.png
+
+Starting up job: 1
+Loss1 => 0.688831
+Accuracy1 => 0.8043
+Starting up job: 2
+Loss2 => 0.401422
+Accuracy2 => 0.863
+Starting up job: 3
+Loss3 => 0.692465
+Accuracy3 => 0.7917
+Starting up job: 4
+Loss4 => 0.436164
+Accuracy4 => 0.8566
+Starting up job: 5
+Loss5 => 0.922199
+Accuracy5 => 0.7198
+Starting up job: 6
+Loss6 => 0.606196
+Accuracy6 => 0.8018

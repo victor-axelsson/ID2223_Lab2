@@ -64,12 +64,14 @@ def train_iterations(iterations, batch_size, mnist, train_step, accuracy, cross_
 
 	return (acc, loss, y_acc, y_loss, x_axis)
 
-def plotLossAndAccuracy(x_axis_loss, y_axis_loss, x_axis_acc, y_axis_acc):
+def plotLossAndAccuracy(x_axis_loss, y_axis_loss, x_axis_acc, y_axis_acc, show=True, jobname=""):
 	plt.xlabel("Iterations")
 	plt.ylabel("Accuracy/Cross Entropy")
 	plt.title("Accuracy over iterations")
 
-	plt.plot(x_axis_loss, y_axis_loss, label='Loss')
-	plt.plot(x_axis_acc, y_axis_acc, label='Accuracy')
-	plt.legend()
-	plt.show()
+	plt.plot(x_axis_loss, y_axis_loss, label='Loss ' + jobname)
+	plt.plot(x_axis_acc, y_axis_acc, label='Accuracy ' + jobname)
+
+	if(show):
+		plt.legend()
+		plt.show()
