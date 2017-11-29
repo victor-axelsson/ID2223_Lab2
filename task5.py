@@ -136,17 +136,17 @@ def main(job_id, learning_rate, dropout):
 				y_loss.append(loss)
 				x_axis.append(i)
 
-				#print("[ITERATTIONS] => " + str(i) + "/" + str(_iterations))
+				if(i % 1000 == 0):
+					print("[ITERATTIONS] => " + str(i) + "/" + str(_iterations))
 
 		return (acc, loss, y_acc, y_loss, x_axis)
 
-	return training_step(dropout, 10000, 100)
-
+	return training_step(dropout, 50000, 100)
 
 '''
 Job number	Learning rate	Dropout
 1			0.001			0.45
-2			0.001			0.7
+2			0.001			0.9
 3			0.0005			0.45
 4			0.0005			0.7
 5			0.0001			0.45
@@ -155,7 +155,7 @@ Job number	Learning rate	Dropout
 acc1, loss1, y_acc1, y_loss1, x_axis1 = main(1, 0.001, 0.45)
 print("Loss1 => " +  str(loss1))
 print("Accuracy1 => " +  str(acc1))
-acc2, loss2, y_acc2, y_loss2, x_axis2 = main(2, 0.001, 0.7)
+acc2, loss2, y_acc2, y_loss2, x_axis2 = main(2, 0.001, 0.9)
 print("Loss2 => " +  str(loss2))
 print("Accuracy2 => " +  str(acc2))
 acc3, loss3, y_acc3, y_loss3, x_axis3 = main(3, 0.0005, 0.45)

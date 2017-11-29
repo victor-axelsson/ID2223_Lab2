@@ -32,3 +32,31 @@ Accuracy5 => 0.7198
 Starting up job: 6
 Loss6 => 0.606196
 Accuracy6 => 0.8018
+
+'''
+Job number	Learning rate	Dropout
+1			0.001			0.45
+2			0.001			0.9
+3			0.0005			0.45
+4			0.0005			0.7
+5			0.0001			0.45
+6			0.0001			0.7
+'''
+Starting up job: 1
+Loss1 => 0.657293
+Accuracy1 => 0.7661
+Starting up job: 2
+Loss2 => 0.269693
+Accuracy2 => 0.9013
+Starting up job: 3
+Loss3 => 0.592839
+Accuracy3 => 0.7893
+Starting up job: 4
+Loss4 => 0.340612
+Accuracy4 => 0.879
+Starting up job: 5
+Loss5 => 0.733277
+Accuracy5 => 0.764
+Starting up job: 6
+Loss6 => 0.423417
+Accuracy6 => 0.8577
